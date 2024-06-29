@@ -15,8 +15,12 @@ class CategoryController extends Controller
             return response()->json([
                 'message' => 'Retreive Category successfully',
                 'status' => 'true',
+<<<<<<< HEAD
                 'categories' => $category,
                 'quantity' => $category->count(),
+=======
+                'product' => $category
+>>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
             ]);
         }
 
@@ -60,13 +64,21 @@ class CategoryController extends Controller
     }
 
     public function getCategories(){
+<<<<<<< HEAD
         $category = Category::with('products')->get();
+=======
+        $category = Category::with('products.pinformations')->get();
+>>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 
         if(sizeof($category)){
             return response()->json([
                 'message' => 'Retreive Category successfully',
                 'status' => 'true',
+<<<<<<< HEAD
                 'products' => $category
+=======
+                'product' => $category
+>>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
             ]);
         }
 

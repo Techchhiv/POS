@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+=======
+>>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 
 class UserCart extends Model
 {
@@ -19,6 +22,7 @@ class UserCart extends Model
         'total'
     ];
 
+<<<<<<< HEAD
     public function user(): BelongsTo{
         return $this->belongsTo(User::class);
     }
@@ -27,5 +31,9 @@ class UserCart extends Model
     }
     public function pinfo(): BelongsTo{
         return $this->belongsTo(PInformation::class);
+=======
+    public function product(){
+
+>>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
     }
 }

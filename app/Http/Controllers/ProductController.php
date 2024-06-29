@@ -18,8 +18,12 @@ class ProductController extends Controller
             return response()->json([
                 'message' => 'Retreive Product successfully',
                 'status' => 'true',
+<<<<<<< HEAD
                 'products' => $product,
                 'quantity' => $product->count(),
+=======
+                'product' => $product
+>>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
             ]);
         }
 
@@ -82,7 +86,10 @@ class ProductController extends Controller
            ]);
 
         $product = Product::create([
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'image' => $request->get('image'),
