@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\User;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -26,3 +30,5 @@ class HomeController extends Controller
         return view('home');
     }
 }
+
+

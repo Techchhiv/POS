@@ -1,0 +1,7 @@
+php artisan db:seed --class=CategorySeeder
+php artisan db:seed --class=ProductSeeder
+php artisan db:seed --class=UserSeeder
+php artisan db:seed --class=CategoryProductSeeder
+php artisan db:seed --class=CustomerSeeder
+php artisan db:seed --class=OrderSeeder
+php artisan db:seed --class=PInformationSeeder
