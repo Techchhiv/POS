@@ -18,11 +18,7 @@ class CartController extends Controller
         $validate = Validator::make($request->all(),[
           'product_id' => 'required',
           'pinfo_id' => 'required',
-<<<<<<< HEAD
           'quantity' => 'nullable',
-=======
-          'quantity' => 'required',
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
         ]);
 
         $customer = Customer::find($id);
@@ -52,7 +48,6 @@ class CartController extends Controller
         }
 
 
-<<<<<<< HEAD
         if( $request->has('quantity')){
             if($pinfo->quantity < $request->get('quantity')){
                 return response()->json([
@@ -60,13 +55,6 @@ class CartController extends Controller
                     'message' => 'Order is higher than in stock!'
                   ]);
             }
-=======
-        if($pinfo->quantity < $request->get('quantity')){
-            return response()->json([
-                'status' => 'false',
-                'message' => 'Order is higher than in stock!'
-              ]);
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
         }
 
         $order = Order::updateOrInsert([
@@ -95,11 +83,7 @@ class CartController extends Controller
                 'quantity' => $c ? $c->quantity + $request->get('quantity') : $request->get('quantity'),
                 'total' => $request->get('quantity') * $product->price,
                 'updated_at' => now(),
-<<<<<<< HEAD
                 'created_at' => $c ? $c->created_at : now(),
-=======
-                'created_at' => now()
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
             ]);
             if(!$cart){
               return response()->json([
@@ -109,15 +93,10 @@ class CartController extends Controller
             }
 
              // Update the quantity in pinfo
-<<<<<<< HEAD
              if($request->has('quantity')){
                  $pinfo->quantity -= $request->get('quantity');
                  $pinfo->save();
              }
-=======
-             $pinfo->quantity -= $request->get('quantity');
-             $pinfo->save();
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 
             return response()->json([
               'status' => 'true',
@@ -189,7 +168,6 @@ class CartController extends Controller
             'message' => 'Product not found!',
           ]);
     }
-<<<<<<< HEAD
     public function deleteOrderCart(Request $request, $id){
         $cart = UserCart::find($id);
 
@@ -206,8 +184,6 @@ class CartController extends Controller
             'message' => 'Product not found!',
           ]);
     }
-=======
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 
   public function checkout($id){
     $order = Order::where('user_id', '=', $id)->get();
@@ -232,11 +208,7 @@ class CartController extends Controller
   }
 
   public function allCustomerOrdered(){
-<<<<<<< HEAD
     $orders = UserCart::with('pinfo','product','user')->get();
-=======
-    $orders = Customer::with('ordersP','product')->get();
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 
     if(sizeof($orders) == 0){
         return response()->json([
@@ -245,18 +217,14 @@ class CartController extends Controller
         ]);
     }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
     return response()->json([
       'status' => 'true',
       'message' => 'Successfully retrieve all customer ordered!',
       'orders' => $orders
     ]);
   }
-<<<<<<< HEAD
 
   public function changeStatusOrder($id){
     $order = UserCart::find($id);
@@ -292,6 +260,4 @@ class CartController extends Controller
         'message' => 'No Order was sold out!',
       ]);
   }
-=======
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 }

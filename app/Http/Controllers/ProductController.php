@@ -7,23 +7,20 @@ use App\Models\CategoryProduct;
 use App\Models\PInformation;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
     public function getProducts(){
-        $product = Product::with('pinformations')->get();
+        $product = Product::with('pinformations','categories')->get();
 
         if(sizeof($product)){
             return response()->json([
                 'message' => 'Retreive Product successfully',
                 'status' => 'true',
-<<<<<<< HEAD
                 'products' => $product,
                 'quantity' => $product->count(),
-=======
-                'product' => $product
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
             ]);
         }
 
@@ -48,25 +45,64 @@ class ProductController extends Controller
             'status' => 'false',
         ]);
     }
+    public function getProductById($id){
+        $product = Product::with('pinformations','categories')->find($id);
+
+        if($product){
+            return response()->json([
+                'message' => 'Retreive Product successfully',
+                'status' => 'true',
+                'product' => $product
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Product not found',
+            'status' => 'false',
+        ]);
+    }
+    public function getProductInfoById($id){
+        $product = PInformation::withfind($id);
+
+        if($product){
+            return response()->json([
+                'message' => 'Retreive Product successfully',
+                'status' => 'true',
+                'product' => $product
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Product not found',
+            'status' => 'false',
+        ]);
+    }
 
     public function createProduct(Request $request){
         $validator = Validator::make($request->all(),[
             'category_name' => 'required',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
-            'image' => 'nullable|string|max:255',
+            'image' => 'nullable|file|image|max:255',
             'barcode' => 'required|integer',
             'price' => 'required',
+            'size' => 'nullable',
+            'color' => 'nullable',
+            'qty' => 'nullable',
             'status' => 'nullable|boolean',
         ]);
 
         if($validator->fails()){
             return response()->json([
-                'message' => 'validation error',
+                'message' => 'Please fill in all information!',
                 'status' => 'false',
                 'errors' => $validator->errors()
             ]);
         }
+
+        $image = $request->file('image');
+        $imageName = $image->getClientOriginalName();
+
 
         $p = Product::where('name','=',$request->get('name'))->first();
 
@@ -85,14 +121,11 @@ class ProductController extends Controller
                 'status' => 'false',
            ]);
 
-        $product = Product::create([
-<<<<<<< HEAD
 
-=======
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
+        $product = Product::create([
             'name' => $request->get('name'),
             'description' => $request->get('description'),
-            'image' => $request->get('image'),
+            'image' => $imageName,
             'barcode' => $request->get('barcode'),
             'price' => $request->get('price'),
             'status' => $request->get('status') ? $request->get('status') : 0,
@@ -107,6 +140,8 @@ class ProductController extends Controller
             'updated_at' => now(),
         ]);
 
+        Storage::disk('minio')->put('image/'. $imageName, file_get_contents($request->file('image')));
+
         if(!$categoryP)
             return response()->json([
                 'message' => 'Error with putting the product with the given category',
@@ -114,6 +149,15 @@ class ProductController extends Controller
         ]);
 
         if($product){
+            $pinfo = PInformation::insert([
+                'product_id' => $product->id,
+                'size' => $request->get('size') ? $request->get('size') : "N/A",
+                'color' => $request->get('color') ? $request->get('color') : "N/A",
+                'quantity' => $request->get('qyt') ? $request->get('qyt') : 1,
+                'created_at' => now(),
+                'updated_at'=> now(),
+            ]);
+
             return response()->json([
                 'status' => 'true',
                 'message' => 'Product Created succesfully',
@@ -180,6 +224,7 @@ class ProductController extends Controller
             'barcode' => $request->get('barcode') ? $request->get('barcode') : $product->barcode,
             'price' => $request->get('price') ? $request->get('price') : $product->price,
             'status' => $request->get('status') ? $request->get('status') : $product->status,
+            'updated_now' => now()
         ]);
 
         if($p){
@@ -267,6 +312,23 @@ class ProductController extends Controller
 
         return response()->json([
             'message' => "Cannot find the product",
+            'status' => 'false',
+        ]);
+    }
+
+    public function changeStatus($id){
+        $product = Product::find($id);
+
+        if($product){
+            $product->status = !$product->status;
+            $product->save();
+            return response()->json([
+                'message' => 'Product update status successfully',
+                'status' => 'true',
+            ]);
+        }
+        return response()->json([
+            'message' => 'Product not found!',
             'status' => 'false',
         ]);
     }

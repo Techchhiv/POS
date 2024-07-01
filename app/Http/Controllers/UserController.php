@@ -14,9 +14,9 @@ class UserController extends Controller
         $validateData = Validator::make($request->all(),[
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'password' => 'required|string|min:4',
+            // 'password' => 'nullable|string|min:4',
             'email' => 'required|string|email',
-            'phone' => 'nullable|integer',
+            'phone' => 'nullable',
             'address' => 'nullable|string',
             'avatar' => 'nullable|string',
         ]);
@@ -24,7 +24,7 @@ class UserController extends Controller
         if($validateData->fails()){
             return response()->json([
                 'status' => 'false',
-                'message' => 'validation failed',
+                'message' => 'Please input all information!',
                 'errors' => $validateData->errors()
               ]
             );
@@ -37,7 +37,7 @@ class UserController extends Controller
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
                 'email' => $request->get('email'),
-                'password' => bcrypt($request->get('password')),
+                'password' => bcrypt(123456),
               ]
             );
 
@@ -79,7 +79,7 @@ class UserController extends Controller
             'first_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'email' => 'nullable|string|email',
-            'phone' => 'nullable|integer',
+            'phone' => 'nullable',
             'address' => 'nullable|string',
             'avatar' => 'nullable|string',
         ]);
@@ -206,6 +206,39 @@ class UserController extends Controller
         'status' => 'true',
         'message' => 'Customer Retrieve Successfully',
         'customer' => $customer
+      ]);
+    }
+    public function getCustomerById($id){
+      $customer = Customer::find($id);
+
+      if(!$customer){
+        return response()->json([
+          'status' => 'false',
+          'message' => 'No Cusotmer',
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'true',
+        'message' => 'Customer Retrieve Successfully',
+        'customer' => $customer
+      ]);
+    }
+    public function getAllCustomer(){
+
+      $customers = Customer::all();
+
+      if(sizeof($customers)==0){
+        return response()->json([
+          'status' => 'false',
+          'message' => 'No Cusotmer',
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'true',
+        'message' => 'Customer Retrieve Successfully',
+        'customers' => $customers
       ]);
     }
 

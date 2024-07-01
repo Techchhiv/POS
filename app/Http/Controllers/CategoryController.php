@@ -15,12 +15,8 @@ class CategoryController extends Controller
             return response()->json([
                 'message' => 'Retreive Category successfully',
                 'status' => 'true',
-<<<<<<< HEAD
                 'categories' => $category,
                 'quantity' => $category->count(),
-=======
-                'product' => $category
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
             ]);
         }
 
@@ -37,6 +33,22 @@ class CategoryController extends Controller
                 'message' => 'Retreive Category successfully',
                 'status' => 'true',
                 'product' => $category
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Category not found',
+            'status' => 'false',
+        ]);
+    }
+    public function getCategoryById($id){
+        $category = Category::find($id);
+
+        if($category){
+            return response()->json([
+                'message' => 'Retreive Category successfully',
+                'status' => 'true',
+                'category' => $category
             ]);
         }
 
@@ -64,21 +76,27 @@ class CategoryController extends Controller
     }
 
     public function getCategories(){
-<<<<<<< HEAD
         $category = Category::with('products')->get();
-=======
-        $category = Category::with('products.pinformations')->get();
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 
+        $productID = [];
         if(sizeof($category)){
+            foreach($category as $index => $c){
+                // dd($c->products);
+                foreach($c->products as $i => $p){
+                    if(empty($productID[$index])){
+                        array_push($productID,(string) $p->id);
+                    }else{
+                        $productID[$index] .= "/".$p->id;
+                    }
+
+                }
+            }
+
             return response()->json([
                 'message' => 'Retreive Category successfully',
                 'status' => 'true',
-<<<<<<< HEAD
-                'products' => $category
-=======
-                'product' => $category
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
+                'products' => $category,
+                'productId' => $productID,
             ]);
         }
 
@@ -95,7 +113,7 @@ class CategoryController extends Controller
 
         if($validate->fails()){
             return response()->json([
-                'message' => 'validation error',
+                'message' => 'Please input all the information!',
                 'status' => 'false',
                 'errors' => $validate->errors()
             ]);

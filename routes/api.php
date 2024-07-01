@@ -25,26 +25,31 @@ Route::get('/test', function() {
     return $customerO;
 });
 
-Route::get('/customers', [UserController::class, 'getCustomers']);
+// Route::get('/customers', [UserController::class, 'getCustomers']);
 Route::post('/customer', [UserController::class, 'createCustomer']);
 Route::post('/customer/update/{id}', [UserController::class,'updateCustomer']);
 Route::delete('/customer/{id}', [UserController::class,'deleteCustomer']);
 
-
 Route::get('/customer', [UserController::class, 'getCustomer']);
+Route::get('/customer/{id}', [UserController::class, 'getCustomerById']);
+Route::get('/customers', [UserController::class, 'getAllCustomer']);
 Route::get('/customers/product', [UserController::class, 'getCustomersProduct']);
 Route::get('/customer/products', [UserController::class, 'getCustomerP']);
 Route::get('/customer/cart/{id}', [UserController::class, 'getCustomerCart']);
 
 Route::get('/categories', [CategoryController::class, 'getAllCategories']);
-Route::get('/category/{name}', [CategoryController::class, 'getCategoryByname']);
+// Route::get('/category/{name}', [CategoryController::class, 'getCategoryByname']);
+Route::get('/category/id/{id}', [CategoryController::class, 'getCategoryById']);
 Route::post('/category', [CategoryController::class, 'createCategory']);
 Route::post('/category/{id}', [CategoryController::class, 'updateCategory']);
 Route::delete('/category/{id}', [CategoryController::class, 'deleteCategory']);
 Route::get('/categories/product', [CategoryController::class, 'getCategories']);
 Route::get('/category/product/{name}', [CategoryController::class, 'getCategory']);
 
-Route::get('/product/{name}', [ProductController::class, 'getProduct']);
+// Route::get('/product/{name}', [ProductController::class, 'getProduct']);
+Route::get('/product/{id}', [ProductController::class, 'getProductById']);
+Route::get('/productinfo/{id}', [ProductController::class, 'getProductInfoById']);
+Route::get('/product/status/{id}', [ProductController::class, 'changeStatus']);
 Route::get('/products', [ProductController::class, 'getProducts']);
 Route::post('/product', [ProductController::class, 'createProduct']);
 Route::post('/productinfo/{id}', [ProductController::class, 'createProductInfo']);

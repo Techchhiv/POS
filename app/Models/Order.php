@@ -24,10 +24,7 @@ class Order extends Model
     public function product(): BelongsTo{
         return $this->belongsTo(Product::class);
     }
-<<<<<<< HEAD
     public function pinfo(): BelongsTo{
         return $this->belongsTo(PInformation::class);
     }
-=======
->>>>>>> 5a3a02ee4411f2d88c5ee71db2a902940e95ec8a
 }
