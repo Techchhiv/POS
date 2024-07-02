@@ -232,6 +232,8 @@ class CartController extends Controller
         return response()->json([
           'status' => 'false',
           'message' => 'No Ordered have been made!',
+          'quantity' => 0,
+          'todayItem' => 0
         ]);
     }
 

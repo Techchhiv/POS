@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -175,6 +176,127 @@ class UserController extends Controller
       ]);
 
     }
+    public function createUser(Request $request){
+      $validateData = Validator::make($request->all(),[
+        'email' => 'required|string|email',
+        'first_name' => 'required|string',
+        'last_name' => 'required|string',
+        'password' => 'required'
+      ]);
+
+      if($validateData->failed()){
+        return response()->json([
+          'status' => 'false',
+          'message' => 'validate error',
+          'errors' => $validateData->errors()
+        ]);
+      }
+
+      // $user = DB::table('users')->whereNotIn('id',function($query){
+      //   $query->select('user_id')->from('customers');
+      // })->get();
+
+      $user = User::where('email',$request->get('email'))->first();
+
+      if($user){
+        return response()->json([
+          'status' => 0,
+          'message' => 'User Already exist with that email',
+        ]);
+      }
+
+      $user = User::insert([
+        'first_name' => $request->get('first_name'),
+        'last_name' => $request->get('last_name'),
+        'email' => $request->get('email'),
+        'password' => bcrypt($request->get('password')),
+      ]);
+
+      if($user){
+        return response()->json([
+          'status' => 1,
+          'message' => 'User created successfully',
+        ]);
+      }
+
+      return response()->json([
+        'status' => 0,
+        'message' => 'Cannot insert user',
+      ]);
+
+    }
+
+    public function getAllEmployee(){
+      $users = User::whereDoesntHave('customers')->get();
+
+      if(sizeof($users)<2){
+        return response()->json([
+          'status' => 0,
+          'message' => 'No Employee',
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'true',
+        'message' => 'User retrieve successfully',
+        'users' => $users,
+      ]);
+    }
+    public function getEmployeeById($id){
+      $user = User::find($id);
+
+      if(!$user){
+        return response()->json([
+          'status' => 0,
+          'message' => 'No Employee',
+        ]);
+      }
+
+      return response()->json([
+        'status' => 1,
+        'message' => 'User retrieve successfully',
+        'employee' => $user,
+      ]);
+    }
+    public function deleteEmployee($id){
+      $user = User::find($id);
+
+      if(!$user){
+        return response()->json([
+          'status' => 0,
+          'message' => 'Employee not found',
+        ]);
+      }
+
+      $user->delete();
+      return response()->json([
+        'status' => 1,
+        'message' => 'User deleted successfully',
+      ]);
+    }
+    public function updateEmployee(Request $request,$id){
+      $user = User::find($id);
+
+      if(!$user){
+        return response()->json([
+          'status' => 0,
+          'message' => 'Employee not found',
+        ]);
+      }
+
+      $user->update([
+        'first_name' => $request->get('first_name') ? $request->get('first_name') : $user->first_name,
+        'last_name' => $request->get('last_name') ? $request->get('last_name') : $user->last_name,
+        'email' => $request->get('email') ? $request->get('email') : $user->email,
+      ]);
+
+      return response()->json([
+        'status' => 1,
+        'message' => 'User updated successfully',
+      ]);
+    }
+
+    
 
     public function getCustomer(Request $request){
       $validateData = Validator::make($request->all(),[

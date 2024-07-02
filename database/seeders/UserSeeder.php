@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,17 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        User::all()->delete();
         $users = [
+            [
+                'first_name' => 'admin',
+                'last_name' => 'admin',
+                'email' => 'admin@gmail.com',
+                'password' => Hash::make('admin'),
+                'remember_token' => Str::random(10),
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
             [
                 'first_name' => 'John',
                 'last_name' => 'Doe',

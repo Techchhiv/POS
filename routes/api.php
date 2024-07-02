@@ -59,7 +59,13 @@ Route::post('/productinfo/update/{id}', [ProductController::class, 'updateProduc
 Route::delete('/product/{id}', [ProductController::class, 'deleteProduct']);
 Route::delete('/productinfo/{id}', [ProductController::class, 'deleteProductInfo']);
 
-Route::post('/login', [UserController::class, 'loginUser']);
+Route::post('/loginUser', [UserController::class, 'loginUser']);
+Route::post('/createUser', [UserController::class,'createUser']);
+Route::get('/employees',[UserController::class,'getAllEmployee']);
+Route::get('/employee/{id}',[UserController::class,'getEmployeeById']);
+Route::post('/employee/{id}',[UserController::class,'updateEmployee']);
+Route::delete('/employee/{id}',[UserController::class,'deleteEmployee']);
+
 
 Route::post('/cart/{id}', [CartController::class,'orderItem']);
 Route::get('/cart/checkout/{id}', [CartController::class,'checkout']);
