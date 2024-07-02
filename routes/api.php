@@ -61,6 +61,7 @@ Route::delete('/productinfo/{id}', [ProductController::class, 'deleteProductInfo
 
 Route::post('/loginUser', [UserController::class, 'loginUser']);
 Route::post('/createUser', [UserController::class,'createUser']);
+
 Route::get('/employees',[UserController::class,'getAllEmployee']);
 Route::get('/employee/{id}',[UserController::class,'getEmployeeById']);
 Route::post('/employee/{id}',[UserController::class,'updateEmployee']);

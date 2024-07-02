@@ -149,12 +149,12 @@ class UserController extends Controller
     public function loginUser(Request $request){
       $validateData = Validator::make($request->all(),[
         'email' => 'required|string|email',
-        'password' => 'required|string|'
+        'password' => 'required|string'
       ]);
 
       if($validateData->failed()){
         return response()->json([
-          'status' => 'false',
+          'status' => 0,
           'message' => 'validate error',
           'errors' => $validateData->errors()
         ]);
@@ -162,7 +162,7 @@ class UserController extends Controller
 
       if(!Auth::attempt($request->only(['email', 'password']))){
         return response()->json([
-          'status' => 'false',
+          'status' => 0,
           'message' => 'Email or Password is incorrect',
         ]);
       }
@@ -170,7 +170,7 @@ class UserController extends Controller
       $user = User::where('email','=',$request->get('email'))->first();
 
       return response()->json([
-        'status' => 'true',
+        'status' => 1,
         'message' => 'User logged in successfully',
         'token' => $user->createToken('Api Token')->plainTextToken,
       ]);
@@ -227,9 +227,9 @@ class UserController extends Controller
     }
 
     public function getAllEmployee(){
-      $users = User::whereDoesntHave('customers')->get();
+      $users = User::whereDoesntHave('customers')->where('first_name','!=','admin')->get();
 
-      if(sizeof($users)<2){
+      if(sizeof($users) == 0){
         return response()->json([
           'status' => 0,
           'message' => 'No Employee',
@@ -296,7 +296,7 @@ class UserController extends Controller
       ]);
     }
 
-    
+
 
     public function getCustomer(Request $request){
       $validateData = Validator::make($request->all(),[
