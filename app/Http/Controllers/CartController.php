@@ -8,6 +8,7 @@ use App\Models\PInformation;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserCart;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -81,7 +82,7 @@ class CartController extends Controller
                 'user_id' => $customer->user_id,
                 'product_id' => $request->get('product_id'),
                 'quantity' => $c ? $c->quantity + $request->get('quantity') : $request->get('quantity'),
-                'total' => $request->get('quantity') * $product->price,
+                'total' => $c ? $c->quantity * $product->price : $request->get('quantity') * $product->price,
                 'updated_at' => now(),
                 'created_at' => $c ? $c->created_at : now(),
             ]);
@@ -168,6 +169,21 @@ class CartController extends Controller
             'message' => 'Product not found!',
           ]);
     }
+    public function deleteCartById($id){
+        $cart = UserCart::find($id);
+        if($cart){
+            $cart->delete();
+            return response()->json([
+                'status' => 'true',
+                'message' => 'Product delete!',
+              ]);
+        }
+
+        return response()->json([
+            'status' => 'false',
+            'message' => 'Product not found!',
+          ]);
+    }
     public function deleteOrderCart(Request $request, $id){
         $cart = UserCart::find($id);
 
@@ -208,6 +224,8 @@ class CartController extends Controller
   }
 
   public function allCustomerOrdered(){
+    $today = Carbon::today()->toDateString();
+    $items = UserCart::whereDate('created_at', $today)->get();
     $orders = UserCart::with('pinfo','product','user')->get();
 
     if(sizeof($orders) == 0){
@@ -217,12 +235,28 @@ class CartController extends Controller
         ]);
     }
 
+    return response()->json([
+      'status' => 'true',
+      'message' => 'Successfully retrieve all customer ordered!',
+      'orders' => $orders,
+      'quantity' => $orders->count(),
+      'todayItem' => $items->count()
+    ]);
+  }
+  public function CustomerOrdered($id){
+    $order = UserCart::with('pinfo','product','user')->where('user_id',$id)->get();
 
+    if(sizeof($order) == 0){
+        return response()->json([
+          'status' => 'false',
+          'message' => 'No Ordered have been made!',
+        ]);
+    }
 
     return response()->json([
       'status' => 'true',
       'message' => 'Successfully retrieve all customer ordered!',
-      'orders' => $orders
+      'order' => $order
     ]);
   }
 
@@ -247,17 +281,17 @@ class CartController extends Controller
   public function soldOutProduct(){
     $orders = UserCart::with('pinfo','product','user')->where('status','1')->get();
 
-    if(sizeof($orders)){
+    if(sizeof($orders) == 0){
         return response()->json([
-            'status' => 'true',
-            'message' => 'Soldout order returned successfully',
-            'orders' => $orders,
-        ]);
+            'status' => 'false',
+            'message' => 'No Order was sold out!',
+          ]);
     }
 
     return response()->json([
-        'status' => 'false',
-        'message' => 'No Order was sold out!',
-      ]);
+        'status' => 'true',
+        'message' => 'Soldout order returned successfully',
+        'orders' => $orders,
+    ]);
   }
 }

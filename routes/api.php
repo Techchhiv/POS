@@ -48,6 +48,7 @@ Route::get('/category/product/{name}', [CategoryController::class, 'getCategory'
 
 // Route::get('/product/{name}', [ProductController::class, 'getProduct']);
 Route::get('/product/{id}', [ProductController::class, 'getProductById']);
+Route::get('/productinfo', [ProductController::class, 'getallProductInfo']);
 Route::get('/productinfo/{id}', [ProductController::class, 'getProductInfoById']);
 Route::get('/product/status/{id}', [ProductController::class, 'changeStatus']);
 Route::get('/products', [ProductController::class, 'getProducts']);
@@ -63,9 +64,10 @@ Route::post('/login', [UserController::class, 'loginUser']);
 Route::post('/cart/{id}', [CartController::class,'orderItem']);
 Route::get('/cart/checkout/{id}', [CartController::class,'checkout']);
 Route::delete('/cart/{id}', [CartController::class,'deleteCart']);
+Route::delete('/cart/delete/{id}', [CartController::class,'deleteCartById']);
 
 Route::get('/orders', [CartController::class, 'allCustomerOrdered']);
-Route::get('/orders/sold', [CartController::class, 'soldOutProduct']);
+Route::get('/orders/{id}', [CartController::class, 'CustomerOrdered']);
+Route::get('/order/sold', [CartController::class, 'soldOutProduct']);
 Route::get('/order/{id}', [CartController::class, 'changeStatusOrder']);
 Route::get('/order/delete/{id}', [CartController::class, 'deleteOrderCart']);
-

@@ -333,4 +333,21 @@ class ProductController extends Controller
         ]);
     }
 
+    function getallProductInfo(){
+        $product = PInformation::with('product')->where('quantity', '>', 0)->get();
+
+        if(sizeof($product)){
+            return response()->json([
+                'message' => 'Retrieve product!',
+                'status' => 'true',
+                'products' => $product
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'No Product found!',
+            'status' => 'false',
+        ]);
+    }
+
 }
