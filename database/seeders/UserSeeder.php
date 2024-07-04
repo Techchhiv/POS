@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::all()->delete();
+        User::truncate();
         $users = [
             [
                 'first_name' => 'admin',
