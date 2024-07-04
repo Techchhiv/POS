@@ -73,6 +73,9 @@ class CartController extends Controller
             ->where('user_id', $customer->user_id)
             ->where('product_id', $request->get('product_id'))
             ->first();
+            if($c){
+                $pinfo->quantity += $c->quantity;
+            }
             $cart = UserCart::updateOrInsert([
                 'user_id' => $customer->user_id,
                 'product_id' => $request->get('product_id'),
@@ -81,8 +84,8 @@ class CartController extends Controller
                 'pinfo_id' => $request->get('pinfo_id'),
                 'user_id' => $customer->user_id,
                 'product_id' => $request->get('product_id'),
-                'quantity' => $c ? $c->quantity + $request->get('quantity') : $request->get('quantity'),
-                'total' => $c ? $c->quantity * $product->price : $request->get('quantity') * $product->price,
+                'quantity' => $request->get('quantity'),
+                'total' =>  $request->get('quantity') * $product->price,
                 'updated_at' => now(),
                 'created_at' => $c ? $c->created_at : now(),
             ]);
@@ -169,6 +172,57 @@ class CartController extends Controller
             'message' => 'Product not found!',
           ]);
     }
+
+    public function UpdateQuantity(Request $request,$id){
+        $customer = Customer::find($id);
+        $pinfo = PInformation::find($request->get('pinfo_id'));
+        $product = Product::find($request->get('product_id'));
+
+        if(!$customer){
+            return response()->json([
+              'status' => 'false',
+              'message' => 'Customer not found!'
+            ]);
+        }
+
+        if(!$product){
+            return response()->json([
+              'status' => 'false',
+              'message' => 'Product not found!'
+            ]);
+        }
+
+        if(!$pinfo){
+            return response()->json([
+              'status' => 'false',
+              'message' => 'Product information not found!'
+            ]);
+        }
+
+        $c = UserCart::where('pinfo_id', $request->get('pinfo_id'))
+            ->where('user_id', $customer->user_id)
+            ->where('product_id', $request->get('product_id'))
+            ->first();
+
+        if($c){
+            $pinfo->quantity += $c->quantity;
+            $c->quantity = $request->get('quantity');
+            $c->total = $request->get('quantity') * $product->price;
+
+            $pinfo->save();
+            if($c->save()){
+                return response()->json([
+                    'status' => 'true',
+                    'message' => 'User cart quantity updated!'
+                  ]);
+                }
+                return response()->json([
+                    'status' => 'false',
+                    'message' => 'User cart was not updated!'
+                  ]);
+        }
+
+    }
     public function deleteCartById($id){
         $cart = UserCart::find($id);
         if($cart){
@@ -202,7 +256,8 @@ class CartController extends Controller
     }
 
   public function checkout($id){
-    $order = Order::where('user_id', '=', $id)->get();
+    $customerID = Customer::find($id);
+    $order = Order::where('user_id', '=', $customerID->user_id)->get();
 
     if(sizeof($order) == 0){
         return response()->json([
@@ -246,7 +301,8 @@ class CartController extends Controller
     ]);
   }
   public function CustomerOrdered($id){
-    $order = UserCart::with('pinfo','product','user')->where('user_id',$id)->get();
+    $customerID = Order::where('customer_id', $id)->first();
+    $order = UserCart::with('pinfo','product','user')->where('user_id',$customerID->user_id)->get();
 
     if(sizeof($order) == 0){
         return response()->json([

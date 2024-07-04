@@ -75,6 +75,7 @@ Route::delete('/cart/delete/{id}', [CartController::class,'deleteCartById']);
 
 Route::get('/orders', [CartController::class, 'allCustomerOrdered']);
 Route::get('/orders/{id}', [CartController::class, 'CustomerOrdered']);
+Route::post('/orders/quantity/{id}', [CartController::class, 'UpdateQuantity']);
 Route::get('/order/sold', [CartController::class, 'soldOutProduct']);
 Route::get('/order/{id}', [CartController::class, 'changeStatusOrder']);
 Route::get('/order/delete/{id}', [CartController::class, 'deleteOrderCart']);

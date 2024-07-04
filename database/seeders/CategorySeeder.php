@@ -33,7 +33,7 @@ class CategorySeeder extends Seeder
             ["name"=>"Jacket","created_at"=>Carbon::now(),"updated_at"=>Carbon::now()],
             ["name"=>"Coat","created_at"=>Carbon::now(),"updated_at"=>Carbon::now()],
             ["name"=>"Shirt","created_at"=>Carbon::now(),"updated_at"=>Carbon::now()],
-            ["name"=>"Jean","created_at"=>Carbon::now(),"updated_at"=>Carbon::now()],
+            // ["name"=>"Jean","created_at"=>Carbon::now(),"updated_at"=>Carbon::now()],
         ];
 
         DB::table('categories')->insert($categories);

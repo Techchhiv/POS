@@ -24,7 +24,7 @@ class PInformationSeeder extends Seeder
 
         foreach ($product as $p){
             for($i = 0; $i<rand(1,3); $i++){
-                $quantities = rand(1, 50); // Quantities from 1 to 50
+                $quantities = rand(2, 50); // Quantities from 1 to 50
                 $pinformations[] = [
                     'product_id' => $p,
                     'size' => $sizes[array_rand($sizes)],
